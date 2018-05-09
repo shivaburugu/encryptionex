@@ -66,12 +66,12 @@ public class MainActivity extends AppCompatActivity {
         encrypt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    String aesencryptedtext = AES256Cipher.encrypt(randomKey,randomIV,textToEncrypt.getText().toString());
-                    aesencrypted.setText(aesencryptedtext);
-                    String rsaencryptedtext = RSA256Ciper.encryptRSAToString(aesencryptedtext,publicKeyBase64);
+                //try {
+                    //String aesencryptedtext = AES256Cipher.encrypt(randomKey,randomIV,textToEncrypt.getText().toString());
+                    //aesencrypted.setText(aesencryptedtext);
+                    String rsaencryptedtext = RSA256Ciper.encryptRSAToString(textToEncrypt.getText().toString(),publicKeyBase64);
                     rsaencrypted.setText(rsaencryptedtext);
-                } catch (UnsupportedEncodingException e) {
+                /*} catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
@@ -85,22 +85,22 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (BadPaddingException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
 
         decrypt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    String rsadecryptedtext = RSA256Ciper.decryptRSAToString(rsadecrypted.getText().toString(),privateKeyBase64);
+                //try {
+                    String rsadecryptedtext = RSA256Ciper.decryptRSAToString(rsaencrypted.getText().toString(),privateKeyBase64);
                     rsadecrypted.setText(rsadecryptedtext);
                     Log.i(TAG, "onClick: rsadecrypted:: "+rsadecryptedtext);
-                    String aesdecryptedtext = AES256Cipher.decrypt(randomKey,randomIV,rsadecryptedtext);
-                    aesdecrypted.setText(aesdecryptedtext);
-                    Log.i(TAG, "onClick: aesdecrypted:: "+aesdecryptedtext);
+                    //String aesdecryptedtext = AES256Cipher.decrypt(randomKey,randomIV,rsadecryptedtext);
+                    //aesdecrypted.setText(aesdecryptedtext);
+                    //Log.i(TAG, "onClick: aesdecrypted:: "+aesdecryptedtext);
 
-                } catch (UnsupportedEncodingException e) {
+                /*} catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (BadPaddingException e) {
                     e.printStackTrace();
-                }
+                }*/
             }
         });
 

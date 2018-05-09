@@ -9,10 +9,13 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.KeySpec;
+import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.OAEPParameterSpec;
+import javax.crypto.spec.PSource;
 
 public class RSA256Ciper {
 
@@ -37,9 +40,9 @@ public class RSA256Ciper {
 
             // get an RSA cipher object and print the provider
             //final Cipher cipher = Cipher.getInstance("AES/CBC/OAEPWITHSHA-256ANDMGF1PADDING");
-            final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
-            // encrypt the plain text using the public key
-            cipher.init(Cipher.ENCRYPT_MODE, key);
+            OAEPParameterSpec sp = new OAEPParameterSpec("SHA-256", "MGF1", new MGF1ParameterSpec("SHA-1"), PSource.PSpecified.DEFAULT);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");            // encrypt the plain text using the public key
+            cipher.init(Cipher.ENCRYPT_MODE, key,sp);
 
             byte[] encryptedBytes = cipher.doFinal(clearText.getBytes("UTF-8"));
             encryptedBase64 = new String(Base64.encode(encryptedBytes, Base64.DEFAULT));
@@ -60,10 +63,10 @@ public class RSA256Ciper {
 
             // get an RSA cipher object and print the provider
             //final Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING");
-            final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
-
+            OAEPParameterSpec sp = new OAEPParameterSpec("SHA-256", "MGF1", new MGF1ParameterSpec("SHA-1"), PSource.PSpecified.DEFAULT);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
             // encrypt the plain text using the public key
-            cipher.init(Cipher.DECRYPT_MODE, key);
+            cipher.init(Cipher.DECRYPT_MODE, key,sp);
 
             byte[] encryptedBytes = Base64.decode(encryptedBase64, Base64.DEFAULT);
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
