@@ -95,8 +95,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     String rsadecryptedtext = RSA256Ciper.decryptRSAToString(rsadecrypted.getText().toString(),privateKeyBase64);
                     rsadecrypted.setText(rsadecryptedtext);
+                    Log.i(TAG, "onClick: rsadecrypted:: "+rsadecryptedtext);
                     String aesdecryptedtext = AES256Cipher.decrypt(randomKey,randomIV,rsadecryptedtext);
-                    aesencrypted.setText(aesdecryptedtext);
+                    aesdecrypted.setText(aesdecryptedtext);
+                    Log.i(TAG, "onClick: aesdecrypted:: "+aesdecryptedtext);
+
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (NoSuchAlgorithmException e) {

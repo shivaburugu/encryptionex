@@ -36,7 +36,8 @@ public class RSA256Ciper {
             Key key = keyFac.generatePublic(keySpec);
 
             // get an RSA cipher object and print the provider
-            final Cipher cipher = Cipher.getInstance("AES/CBC/OAEPWITHSHA-256ANDMGF1PADDING");
+            //final Cipher cipher = Cipher.getInstance("AES/CBC/OAEPWITHSHA-256ANDMGF1PADDING");
+            final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
             // encrypt the plain text using the public key
             cipher.init(Cipher.ENCRYPT_MODE, key);
 
@@ -58,7 +59,9 @@ public class RSA256Ciper {
             Key key = keyFac.generatePrivate(keySpec);
 
             // get an RSA cipher object and print the provider
-            final Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING");
+            //final Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING");
+            final Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", "BC");
+
             // encrypt the plain text using the public key
             cipher.init(Cipher.DECRYPT_MODE, key);
 
