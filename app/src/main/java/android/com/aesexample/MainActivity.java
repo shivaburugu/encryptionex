@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -56,13 +59,60 @@ public class MainActivity extends AppCompatActivity {
 
 
         textToEncrypt = findViewById(R.id.editText);
-        randomIV = AES256Cipher.getRandomAesCryptIv();
+
+        String textToBeEncrypted = "{\n" +
+                "  \"ssid\": \"MV Office\",\n" +
+                "  \"psk\": \"i8some\"\n" +
+                "}";
+        //Step 1
         try {
             randomKey = AES256Cipher.getRandomAesCryptKey();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        //Step 2
+        randomIV = AES256Cipher.getRandomAesCryptIv();
 
+        //Step 3 replace need to replace this with the key coming from server
+        String rsaKey = privateKeyBase64;
+        String encryptedSymmetricKey = RSA256Ciper.encryptRSAToString(new String(randomKey),rsaKey);
+
+        //Step 4
+        String encryptedSymmetricIV = RSA256Ciper.encryptRSAToString(new String(randomIV),rsaKey);
+
+        //Step 5
+        String convertedbase64payload = "";
+        try {
+            String encryptedWifiCredentials = AES256Cipher.encrypt(randomKey,randomIV,textToBeEncrypted);
+            convertedbase64payload = new String(Base64.encode(encryptedWifiCredentials.getBytes(), Base64.DEFAULT));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
+
+        String finalPayload = "";
+        try {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("payload",convertedbase64payload);
+        jsonObject.put("symmetrickey",encryptedSymmetricKey);
+        jsonObject.put("iv",encryptedSymmetricIV);
+        finalPayload = jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, "onCreate: Final Payload "+finalPayload);
         encrypt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

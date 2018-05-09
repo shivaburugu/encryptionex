@@ -35,7 +35,9 @@ public class RSA256Ciper {
         String encryptedBase64 = "";
         try {
             KeyFactory keyFac = KeyFactory.getInstance("RSA");
-            KeySpec keySpec = new X509EncodedKeySpec(Base64.decode(publicKey.trim().getBytes(), Base64.DEFAULT));
+            //KeySpec keySpec = new X509EncodedKeySpec(Base64.decode(publicKey.trim().getBytes(), Base64.DEFAULT));
+            KeySpec keySpec = new X509EncodedKeySpec(publicKey.getBytes());
+
             Key key = keyFac.generatePublic(keySpec);
 
             // get an RSA cipher object and print the provider
