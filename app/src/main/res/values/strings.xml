@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AES Example</string>
+    <string name="text_to_encrypt">Text to encrypt</string>
+</resources>
