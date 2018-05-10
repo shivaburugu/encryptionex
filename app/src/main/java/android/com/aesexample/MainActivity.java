@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     PrivateKey privateKey;
     String publicKeyBase64,privateKeyBase64;
     private String TAG = MainActivity.class.getSimpleName();
+    RSA512 rsa512 = new RSA512();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,16 +77,17 @@ public class MainActivity extends AppCompatActivity {
 
         //Step 3 replace need to replace this with the key coming from server
         String rsaKey = privateKeyBase64;
-        String encryptedSymmetricKey = RSA256Ciper.encryptRSAToString(new String(randomKey),rsaKey);
+        String encryptedSymmetricKey = rsa512.encrypt(new String(randomKey));
 
         //Step 4
-        String encryptedSymmetricIV = RSA256Ciper.encryptRSAToString(new String(randomIV),rsaKey);
+        String encryptedSymmetricIV = rsa512.encrypt(new String(randomIV));
 
         //Step 5
         String convertedbase64payload = "";
         try {
             String encryptedWifiCredentials = AES256Cipher.encrypt(randomKey,randomIV,textToBeEncrypted);
             convertedbase64payload = new String(Base64.encode(encryptedWifiCredentials.getBytes(), Base64.DEFAULT));
+            Log.i(TAG, "onCreate: convertedbase64payload "+convertedbase64payload);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 //try {
                     //String aesencryptedtext = AES256Cipher.encrypt(randomKey,randomIV,textToEncrypt.getText().toString());
                     //aesencrypted.setText(aesencryptedtext);
-                    String rsaencryptedtext = RSA256Ciper.encryptRSAToString(textToEncrypt.getText().toString(),publicKeyBase64);
+                    String rsaencryptedtext = rsa512.encrypt(textToEncrypt.getText().toString());
                     rsaencrypted.setText(rsaencryptedtext);
                 /*} catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
@@ -143,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //try {
-                    String rsadecryptedtext = RSA256Ciper.decryptRSAToString(rsaencrypted.getText().toString(),privateKeyBase64);
+                    String rsadecryptedtext = rsa512.encrypt(rsaencrypted.getText().toString());
                     rsadecrypted.setText(rsadecryptedtext);
                     Log.i(TAG, "onClick: rsadecrypted:: "+rsadecryptedtext);
                     //String aesdecryptedtext = AES256Cipher.decrypt(randomKey,randomIV,rsadecryptedtext);

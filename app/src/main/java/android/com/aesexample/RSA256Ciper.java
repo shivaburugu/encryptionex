@@ -2,12 +2,14 @@ package android.com.aesexample;
 
 import android.util.Base64;
 
+import org.spongycastle.jce.provider.BouncyCastleProvider;
+
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.NoSuchAlgorithmException;
+import java.security.Security;
 import java.security.spec.KeySpec;
 import java.security.spec.MGF1ParameterSpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -19,32 +21,29 @@ import javax.crypto.spec.PSource;
 
 public class RSA256Ciper {
 
-/*
-    public void TestEncryptData(String dataToEncrypt) {
-        // generate a new public/private key pair to test with (note. you should only do this once and keep them!)
-
-
-        // test encryption
-        String encrypted = encryptRSAToString(dataToEncrypt, publicKeyBytesBase64);
-
-        // test decryption
-        String decrypted = decryptRSAToString(encrypted, privateKeyBytesBase64);
+    KeyPair key;
+    RSA256Ciper() {
+        Security.addProvider(new BouncyCastleProvider());
+        KeyPairGenerator keyGen = null;
+        try {
+            keyGen = KeyPairGenerator.getInstance("RSA");
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        keyGen.initialize(512);
+        key = keyGen.generateKeyPair();
     }
-*/
-    public static String encryptRSAToString(String clearText, String publicKey) {
+
+    public String encryptRSAToString(String clearText, String publicKey) {
         String encryptedBase64 = "";
         try {
-            KeyFactory keyFac = KeyFactory.getInstance("RSA");
-            KeySpec keySpec = new X509EncodedKeySpec(Base64.decode(publicKey.trim().getBytes(), Base64.DEFAULT));
-            //KeySpec keySpec = new X509EncodedKeySpec(publicKey.getBytes());
 
-            Key key = keyFac.generatePublic(keySpec);
 
             // get an RSA cipher object and print the provider
             //final Cipher cipher = Cipher.getInstance("AES/CBC/OAEPWITHSHA-256ANDMGF1PADDING");
-            OAEPParameterSpec sp = new OAEPParameterSpec("SHA-256", "MGF1", new MGF1ParameterSpec("SHA-1"), PSource.PSpecified.DEFAULT);
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");            // encrypt the plain text using the public key
-            cipher.init(Cipher.ENCRYPT_MODE, key,sp);
+            OAEPParameterSpec sp = new OAEPParameterSpec("SHA-512", "MGF1", new MGF1ParameterSpec("SHA-1"), PSource.PSpecified.DEFAULT);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-512AndMGF1Padding");            // encrypt the plain text using the public key
+            cipher.init(Cipher.ENCRYPT_MODE, key.getPublic(), sp);
 
             byte[] encryptedBytes = cipher.doFinal(clearText.getBytes("UTF-8"));
             encryptedBase64 = new String(Base64.encode(encryptedBytes, Base64.DEFAULT));
@@ -55,20 +54,18 @@ public class RSA256Ciper {
         return encryptedBase64.replaceAll("(\\r|\\n)", "");
     }
 
-    public static String decryptRSAToString(String encryptedBase64, String privateKey) {
+    public String decryptRSAToString(String encryptedBase64, String privateKey) {
 
         String decryptedString = "";
         try {
-            KeyFactory keyFac = KeyFactory.getInstance("RSA");
-            KeySpec keySpec = new PKCS8EncodedKeySpec(Base64.decode(privateKey.trim().getBytes(), Base64.DEFAULT));
-            Key key = keyFac.generatePrivate(keySpec);
+
 
             // get an RSA cipher object and print the provider
             //final Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING");
-            OAEPParameterSpec sp = new OAEPParameterSpec("SHA-256", "MGF1", new MGF1ParameterSpec("SHA-1"), PSource.PSpecified.DEFAULT);
-            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+            OAEPParameterSpec sp = new OAEPParameterSpec("SHA-512", "MGF1", new MGF1ParameterSpec("SHA-1"), PSource.PSpecified.DEFAULT);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-512AndMGF1Padding");            // encrypt the plain text using the public key
             // encrypt the plain text using the public key
-            cipher.init(Cipher.DECRYPT_MODE, key,sp);
+            cipher.init(Cipher.DECRYPT_MODE, key.getPrivate(), sp);
 
             byte[] encryptedBytes = Base64.decode(encryptedBase64, Base64.DEFAULT);
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
