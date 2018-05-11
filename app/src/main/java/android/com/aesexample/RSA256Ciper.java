@@ -2,18 +2,10 @@ package android.com.aesexample;
 
 import android.util.Base64;
 
-import org.spongycastle.jce.provider.BouncyCastleProvider;
-
-import java.security.Key;
-import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.Security;
-import java.security.spec.KeySpec;
 import java.security.spec.MGF1ParameterSpec;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.OAEPParameterSpec;
@@ -22,8 +14,8 @@ import javax.crypto.spec.PSource;
 public class RSA256Ciper {
 
     KeyPair key;
+
     RSA256Ciper() {
-        Security.addProvider(new BouncyCastleProvider());
         KeyPairGenerator keyGen = null;
         try {
             keyGen = KeyPairGenerator.getInstance("RSA");
