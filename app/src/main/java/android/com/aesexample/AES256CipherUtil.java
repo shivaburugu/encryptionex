@@ -1,13 +1,13 @@
 package android.com.aesexample;
 
-/** Created by Awesometic
- * references: https://gist.github.com/dealforest/1949873
- * This source is updated example code of above source code.
- * I added it two functions that are make random IV and make random 256 bit key.
- * It's encrypt returns Base64 encoded cipher, and also decrpyt for Base64 encoded Cipher
- */
-import android.support.annotation.RequiresApi;
 import android.util.Base64;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -16,33 +16,17 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.SecureRandom;
-import java.security.spec.AlgorithmParameterSpec;
-
-public class AES256Cipher {
-
-    public static byte[] getRandomAesCryptKey() throws UnsupportedEncodingException {
-        try {
-            MessageDigest sha256Hash = MessageDigest.getInstance("SHA-256");
-            sha256Hash.update(Constants.AES256_KEY_SALT);
-
-            return sha256Hash.digest();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-
-            return null;
-        }
+public class AES256CipherUtil {
+    private static final byte[] AES256_KEY_SALT = {00000000000000000000000000000000};
+    public static byte[] getRandomAESCryptKey() throws NoSuchAlgorithmException {
+        MessageDigest sha256Hash = MessageDigest.getInstance("SHA-256");
+        sha256Hash.update(AES256_KEY_SALT);
+        return sha256Hash.digest();
     }
 
     public static byte[] getRandomAesCryptIv() {
         byte[] randomBytes = new byte[16];
         new SecureRandom().nextBytes(randomBytes);
-
         return new IvParameterSpec(randomBytes).getIV();
     }
 
