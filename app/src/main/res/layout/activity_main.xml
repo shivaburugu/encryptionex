@@ -8,11 +8,13 @@
     tools:layout_editor_absoluteY="81dp">
 
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="14dp"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="151dp"
-        tools:layout_editor_absoluteY="226dp" />
+    <EditText
+        android:id="@+id/installation_code_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter installation code"
+        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-"
+        android:maxEms="39"
+        android:maxLength="36"
+        android:maxLines="2" />
 </android.support.constraint.ConstraintLayout>
